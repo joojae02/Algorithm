@@ -7,41 +7,58 @@
 
 using namespace std;
 int N, M, K;
-int P[11] = {0,};
-int NP[11][11];
-bool visit[11] = {0,};
-bool check(){
-    for(int i=0; i<M-1; i++){
-        if(P[i] > P[i+1])
-            return false;
+int P[11][11];
+bool visit[11][11] = {0,};
+pair<int,int> ans[11];
+int result = -1e4;
+bool check(int x, int y, int depth){
+    for(int i=1; i<=depth; i++){
+        if(ans[i].first + 1 == x)
+            if(ans[i].second == y)
+                return false;
+        if(ans[i].first == x)
+            if(ans[i].second + 1 == y)
+                return false;
+        if(ans[i].first - 1 == x)
+            if(ans[i].second == y)
+                return false;
+        if(ans[i].first == x)
+            if(ans[i].second - 1 == y)
+                return false;
     }
     return true;
 }
-void dfs(int depth){
-    if(depth == M){
-        if(check())
-        {        
-            for(int i=0; i<M; i++){
-                printf("%d ", P[i]);
-            }
-            printf("\n");
-        }
+
+void dfs(int depth, int sum){
+    //printf("depth = %d, sum = %d\n",depth, sum);
+    if(depth == K){
+        if(result < sum)
+            result = sum;
         return;
     }
-    for(int i = 1; i <= N; i++)
+    for(int i=1; i <= N; i++)
     {
-
-            visit[i] = true;
-            P[depth] = NP[i];
-            dfs(depth+1);
-            visit[i] = false;
+        for(int j=1; j<=M; j++)
+        {
+            if(!visit[i][j])
+            {
+                if(check(i,j,depth))
+                {    
+                    visit[i][j] = true;
+                    ans[depth+1] = {i,j};
+                    dfs(depth+1, sum + P[i][j]);
+                    visit[i][j] = false;
+                }
+            }
+        }
     }
 }
 
 int main(void){
     scanf("%d %d %d", &N, &M, &K);
     for(int i=1; i<=N; i++)
-        for(int j=1; j<=N; j++)
-            scanf("%d", &NP[i][j]);
-    dfs(0);
+        for(int j=1; j<=M; j++)
+            scanf("%d", &P[i][j]);
+    dfs(0,0);
+    printf("%d", result);
 }
