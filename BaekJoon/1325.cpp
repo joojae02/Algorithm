@@ -9,7 +9,7 @@ using namespace std;
 
 int N, M;
 vector<int> p[10001];
-vector<bool> visit;
+vector<bool> visited;
 vector<int> result;
 int ans = 0;
 
@@ -20,8 +20,8 @@ void dfs(int n)
     for(int i=0; i < p[n].size(); i++){
         int next = p[n][i];
 
-        if(!visit[next]){
-            visit[next] = 1;
+        if(!visited[next]){
+            visited[next] = 1;
             dfs(next);
         }
     }
@@ -41,8 +41,8 @@ int main(void)
     }
 
     for(int i=1;i<=N;i++){
-        visit = vector<bool> (N+1 ,0);
-        visit[i] = 1;
+        visited = vector<bool> (N+1 ,0);
+        visited[i] = 1;
         dfs(i);
     }
 
